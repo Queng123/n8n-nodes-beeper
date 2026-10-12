@@ -118,10 +118,28 @@ export class Beeper implements INodeType {
 						action: 'List all chats',
 					},
 					{
+						name: 'Read',
+						value: 'read',
+						description: 'Mark a chat as read',
+						action: 'Mark a chat as read',
+					},
+					{
 						name: 'Search',
 						value: 'search',
 						description: 'Search for chats',
 						action: 'Search chats',
+					},
+					{
+						name: 'Unread',
+						value: 'unread',
+						description: 'Mark a chat as unread',
+						action: 'Mark a chat as unread',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a chat message',
+						action: 'Update a chat message',
 					},
 				],
 				default: 'list',
@@ -252,6 +270,48 @@ export class Beeper implements INodeType {
 					},
 				},
 				description: 'The search query for finding chats',
+			},
+			{
+				displayName: 'Chat ID',
+				name: 'chatId',
+				type: 'string',
+				required: true,
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['chat'],
+						operation: ['update', 'read', 'unread'],
+					},
+				},
+				description: 'The ID of the chat',
+			},
+			{
+				displayName: 'Message ID',
+				name: 'messageId',
+				type: 'string',
+				required: true,
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['chat'],
+						operation: ['update'],
+					},
+				},
+				description: 'The ID of the message',
+			},
+			{
+				displayName: 'New Message Text',
+				name: 'newText',
+				type: 'string',
+				required: true,
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['chat'],
+						operation: ['update'],
+					},
+				},
+				description: 'The new text for the message to update',
 			},
 
 			// ==================== MESSAGE PARAMETERS ====================
@@ -421,6 +481,32 @@ export class Beeper implements INodeType {
 						body = {
 							archive,
 						};
+					}
+
+					if (operation === 'update') {
+						// Designed from API https://developers.beeper.com/desktop-api-reference/resources/messages/methods/update/
+						method = 'PUT';
+						const chatId = this.getNodeParameter('chatId', i) as string;
+						const messageId = this.getNodeParameter('messageId', i) as string;
+						endpoint = `/v1/chats/${encodeURIComponent(chatId)}/messages/${encodeURIComponent(messageId)}`;
+						const newText = this.getNodeParameter('newText', i) as string;
+						body = {
+							text: newText,
+						};
+					}
+
+					if (operation === 'read') {
+						// Designed from API https://developers.beeper.com/desktop-api-reference/resources/chats/methods/mark_read/
+						method = 'POST';
+						const chatId = this.getNodeParameter('chatId', i) as string;
+						endpoint = `/v1/chats/${encodeURIComponent(chatId)}/read`;
+					}
+
+					if (operation === 'unread') {
+						// Designed from API https://developers.beeper.com/desktop-api-reference/resources/chats/methods/mark_unread/
+						method = 'POST';
+						const chatId = this.getNodeParameter('chatId', i) as string;
+						endpoint = `/v1/chats/${encodeURIComponent(chatId)}/unread`;
 					}
 				}
 

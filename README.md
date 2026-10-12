@@ -29,6 +29,9 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 - **Create** - Create a new chat with a recipient
 - **Search** - Search for chats by query
 - **Archive** - Archive or unarchive a chat
+- **Update** - Update the text of an existing mesage
+- **Read** - Mark a chat as read
+- **Unread** - Mark a chat as unread
 
 ### Message
 - **Send** - Send a message to a chat
@@ -88,6 +91,10 @@ Sending too many messages may result in account suspension by the messaging netw
 * [Beeper Desktop API Documentation](https://developers.beeper.com/desktop-api)
 
 ## Version history
+
+### 2.0.2
+
+Added chat operations: Update, Read, Unread
 
 ### 2.0.1
 
